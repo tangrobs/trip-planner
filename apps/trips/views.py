@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
 from .models import User, Trip, Agenda, Activity
-import bcrypt
+import bcrypt, datetime
 
 def index(request):
     return render(request, "trips/index.html")
@@ -52,16 +52,47 @@ def newTrip_process(request):
         return redirect('/trips/new')
     else:
         user = User.objects.get(id=request.session['user_id'])
-        Trip.objects.create(title=request.POST['title'], description=request.POST['description'], date_from=request.POST['date_from'], date_to=request.POST['date_to'], admin=user).save()
+        trip = Trip.objects.create(title=request.POST['title'], description=request.POST['description'], date_from=request.POST['date_from'], date_to=request.POST['date_to'], admin=user)
+        trip.save()
+        Agenda.objects.create(day=1, date=datetime.date.today(), trip=trip)
         return redirect('/profile')
 
 def plan(request, tripID):
     user = User.objects.get(id=request.session['user_id'])
+    trip = Trip.objects.get(id=tripID)
     context = {
         'user': user,
         'trip': Trip.objects.get(id=tripID),
+        'agendas': Agenda.objects.filter(trip=trip).exclude(day=1),
+
     }
     return render(request, 'trips/plan.html', context)
+
+def agenda(request, tripID):
+    trip = Trip.objects.get(id=tripID)
+    context = {
+        'agendas': Agenda.objects.filter(trip=trip).exclude(day=1),
+    }
+    return render(request, 'trips/agenda.html', context)
+
+def newAgenda(request, tripID):
+    trip = Trip.objects.get(id=tripID)
+    numAgenda = len(Agenda.objects.filter(trip=trip)) + 1
+    print("numAgenda:", numAgenda)
+    agenda = Agenda.objects.create(day=numAgenda, date=datetime.date.today(), trip=trip)
+    agenda.save()
+    context = {
+        'agendas': Agenda.objects.filter(trip=trip).exclude(day=1),
+    }
+    return render(request, 'trips/agenda_tabs.html', context)
+
+def agendaContent(request, tripID):
+    trip = Trip.objects.get(id=tripID)
+    print("*"*150, "made it to agenda content")
+    context = {
+        'agendas': Agenda.objects.filter(trip=trip).exclude(day=1),
+    }
+    return render(request, 'trips/agenda_tabcontents.html', context)
 
 def logout(request):
     request.session.clear()

@@ -82,6 +82,7 @@ class Trip(models.Model):
 class Agenda(models.Model):
     day = models.IntegerField()
     date = models.DateField()
+    trip = models.ForeignKey(Trip, related_name="agendas")
 
 class Activity(models.Model):
     location = models.CharField(max_length=255)
