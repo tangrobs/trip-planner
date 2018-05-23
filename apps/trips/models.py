@@ -76,6 +76,7 @@ class Trip(models.Model):
     date_to = models.DateField()
     admin = models.ForeignKey(User, related_name="trips_planned")
     attended_by = models.ManyToManyField(User, related_name="trips_attending")
+    invited = models.ManyToManyField(User, related_name="trips_invited_to")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

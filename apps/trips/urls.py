@@ -13,6 +13,9 @@ urlpatterns = [
     url(r'^trips/plan/(?P<tripID>\d+)/agenda$', views.agenda),
     url(r'^trips/plan/(?P<tripID>\d+)/agenda/new$', views.newAgenda),
     url(r'^trips/plan/(?P<tripID>\d+)/agenda/new/content$', views.agendaContent),
+    url(r'^trips/plan/(?P<tripID>\d+)/add_travelbuddy$', views.addTravelBuddy),
+    url(r'^trips/plan/(?P<tripID>\d+)/add_travelbuddy/(?P<userID>\d+)/process$', views.addTravelBuddy_process),
+    url(r'^trips/plan/(?P<tripID>\d+)/join$', views.joinTrip),
     url(r'^logout$', views.logout),
     url(r'^try$', views.tryIt),
 

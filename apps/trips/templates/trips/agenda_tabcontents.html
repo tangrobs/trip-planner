@@ -5,15 +5,16 @@
     <title></title>
   </head>
   <body>
-    <div id="day1" class="tabcontent">
-      <h3>Day 1 activities</h3>
-      <a href="#">Add activity</a>
-    </div>
-    {% for agenda in agendas %}
-    <div id="day{{agenda.day}}" class="tabcontent after">
-      <h3>Day {{agenda.day}} activities</h3>
-      <a href="#">Add activity</a>
-    </div>
-    {% endfor %}
+    <div class="tabcontents">
+      <div id="day1" class="tabcontent">
+        <div class="activity">Activity 1</div>
+        <a href="#">Add activity</a>
+      </div>
+      {% for agenda in agendas %}
+      <div id="day{{agenda.day}}" class="tabcontent after">
+        <div class="activity">Activity 1</div>
+        <a href="#">Add activity</a>
+      </div>
+      {% endfor %}
   </body>
 </html>

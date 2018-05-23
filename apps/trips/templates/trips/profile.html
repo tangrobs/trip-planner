@@ -17,6 +17,9 @@
         display: inline;
         margin-left: 50px;
       }
+      .invited {
+        border: 1px solid black;
+      }
       #add-link {
         margin: 30px;
         float: right;
@@ -39,6 +42,18 @@
     {% endif %}
 
     <div class="container">
+      <div class="invited">
+        {% if trips_invited_to%}
+        <p>You are invited:</p>
+        {% for trip in trips_invited_to%}
+          {{trip.title}}
+          <form action="/trips/plan/{{trip.id}}/join" method='POST'>{%csrf_token%}
+            <button type="submit">Join</button>
+          </form>
+        {% endfor %}
+        {% endif %}
+      </div>
+
       <h3>Your Trips</h3>
       {% if trips%}
       <table>
@@ -62,6 +77,7 @@
       {%else%}
       <p>You have no upcoming trips</p>
       {% endif %}
+
 
       <a href="/trips/new" id="add-link">Add Travel Plan</a>
     </div>

@@ -38,6 +38,7 @@ def profile(request):
     context = {
         'user': user,
         'trips': Trip.objects.filter(admin=user) | Trip.objects.filter(attended_by=user),
+        'trips_invited_to': Trip.objects.filter(invited=user),
     }
     return render(request, 'trips/profile.html', context)
 
@@ -64,8 +65,9 @@ def plan(request, tripID):
         'user': user,
         'trip': Trip.objects.get(id=tripID),
         'agendas': Agenda.objects.filter(trip=trip).exclude(day=1),
-
     }
+    if user.id == trip.admin.id:
+        return render(request, 'trips/plan_admin.html', context)
     return render(request, 'trips/plan.html', context)
 
 def agenda(request, tripID):
@@ -78,7 +80,6 @@ def agenda(request, tripID):
 def newAgenda(request, tripID):
     trip = Trip.objects.get(id=tripID)
     numAgenda = len(Agenda.objects.filter(trip=trip)) + 1
-    print("numAgenda:", numAgenda)
     agenda = Agenda.objects.create(day=numAgenda, date=datetime.date.today(), trip=trip)
     agenda.save()
     context = {
@@ -88,11 +89,39 @@ def newAgenda(request, tripID):
 
 def agendaContent(request, tripID):
     trip = Trip.objects.get(id=tripID)
-    print("*"*150, "made it to agenda content")
     context = {
         'agendas': Agenda.objects.filter(trip=trip).exclude(day=1),
     }
     return render(request, 'trips/agenda_tabcontents.html', context)
+
+def addTravelBuddy(request, tripID):
+    trip = Trip.objects.get(id=tripID)
+    user_signed_in = User.objects.get(id=request.session['user_id'])
+    context = {
+        'user_signed_in': user_signed_in,
+        'users': User.objects.exclude(trips_invited_to=trip).exclude(id=request.session['user_id']).exclude(trips_attending=trip),
+        'trip': trip,
+        'invited': User.objects.filter(trips_invited_to=trip),
+        'attended_by': User.objects.filter(trips_planned=trip) | User.objects.filter(trips_attending=trip),
+    }
+    if user_signed_in.id == trip.admin.id:
+        return render(request, 'trips/addTravelBuddy_admin.html', context)
+    return render(request, 'trips/addTravelBuddy.html', context)
+
+def addTravelBuddy_process(request, tripID, userID):
+    Trip.objects.get(id=tripID).invited.add(User.objects.get(id=userID))
+    context = {
+        'users': User.objects.all(),
+        'trip': Trip.objects.get(id=tripID),
+    }
+    return redirect('/trips/plan/{}/add_travelbuddy'.format(tripID))
+
+def joinTrip(request, tripID):
+    user = User.objects.get(id=request.session['user_id'])
+    trip = Trip.objects.get(id=tripID)
+    trip.attended_by.add(user)
+    trip.invited.remove(user)
+    return redirect('/profile')
 
 def logout(request):
     request.session.clear()
