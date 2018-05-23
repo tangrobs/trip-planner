@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index),
     url(r'^signin', views.signin),
+    url(r'^signin/google$', views.googleSignin),
     url(r'^register$', views.register),
     url(r'^register/process$', views.register_process),
     url(r'^profile$', views.profile),
