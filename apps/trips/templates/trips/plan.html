@@ -3,17 +3,22 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Travel Dashboard</title>
+    {% load static %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="{% static 'trips/js/suggestions.js' %}"></script>
     <style>
       * {box-sizing: border-box}
       .container {
         margin: 30px;
+        width: 1200px;
       }
       main, section {
         display: inline-block;
+        vertical-align: top;
       }
       main {
         width: 500px;
@@ -88,10 +93,52 @@
           height: 300px;
           text-align: center;
       }
+
+
+  		.displayinfo{
+          width:80%;
+          height:80%;
+          display:none;
+          position:fixed;
+          overflow-y: scroll;
+          border:2px solid black;
+          background-color: gray;
+          margin-left:100px;
+		      z-index:999999;
+          }
+  		.places{
+  			background-position:center;
+  			background-repeat:no-repeat;
+  			text-align:center;
+  			margin-bottom:5px;
+  			background-size:cover;
+  			box-shadow: 1px 1px 1px 1px #000000;
+  			border-radius: 5px;
+  			width:300px;
+  			height:90px;
+  		}
+  		.places h2{
+  			line-height:90px;
+  			color:whitesmoke;
+  			text-shadow:2px 2px 8px #000000;
+  			font-size:20px;
+  			font-family:Verdana, Geneva, Tahoma, sans-serif;
+  		}
+  		.loc{
+  			overflow-y:scroll;
+  			height: 500px;
+  		}
+  		.wrapper{
+  			width:1280px;
+  		}
+  		#searchbutton{
+  			margin-bottom:5px;
+  		}
     </style>
 
   </head>
   <body>
+    <div class = "displayinfo"></div>
     <nav>
       <a href="/logout">Logout</a>
       <a href="/profile">Home</a>
@@ -122,7 +169,7 @@
             <button class="tablinks" onclick="openAgenda(event, 'day{{agenda.day}}')">Day {{agenda.day}}</button>
           {% endfor %}
 
-          
+
         </div>
 
         <!-- Tab content -->
@@ -139,9 +186,20 @@
           {% endfor %}
       </main>
 
-      <!-- <section>
-        <h2>Suggestions</h2>
-      </section> -->
+      <section>
+  			<div>
+  				<h2>Proposed</h2>
+  				<button id = "activitybutton" class= "btn waves-effect waves-light">add activity</button>
+  			</div>
+  			<div>
+  				<h2>Suggestions</h2>
+  				<input id = "pac-input" type = "text" placeholder="search box">
+  				<button id = "searchbutton" class= "btn waves-effect waves-light">Find Suggestions!</button>
+  				<div id="map"></div>
+  				<div class = "loc"></div>
+  				<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzgRKlW8A7Bgf5ywmvgtKtooX8YhKbm9U&libraries=places&callback=initAutocomplete"async defer></script>
+  			</div>
+		  </section>
     </div>
 
     <script>
