@@ -193,5 +193,20 @@ def addtoagenda(request):
     thisagenda.activities.add(thisactivity)
     print("entering addtoagenda")
     return HttpResponse("asdf")
+
+def showmap(request):
+    thistrip = Trip.objects.get(id = request.session['tripID'])
+    thisagenda = thistrip.agendas.get(day = request.session['dayID']).activities.all()
+    context = {
+        "locations":thisagenda
+    }
+    return render(request, "trips/map.html",context)
+
+def showroute(request,start,end):
+    context = {
+        'start':start,
+        'end':end,
+    }
+    return render(request, "trips/route.html",context)
     
 

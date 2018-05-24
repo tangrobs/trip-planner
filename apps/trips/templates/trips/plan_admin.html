@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzgRKlW8A7Bgf5ywmvgtKtooX8YhKbm9U&libraries=places&callback=initAutocomplete"async defer></script>
   <script src="{% static 'trips/js/suggestions.js' %}"></script>
   <style>
     * {box-sizing: border-box}
@@ -161,6 +162,7 @@
     </aside>
 
     <main>
+      <button id = "mapbutton">map</button>
       <a href="/trips/plan/{{trip.id}}/add_travelbuddy">Travel Buddies</a>
       <h2>Agenda</h2>
       <!-- Tab links -->
@@ -174,13 +176,15 @@
           <button id="add-button">Add</button>
         <!-- </form> -->
       </div>
+      
 
       <!-- Tab content -->
       <div class="tabcontents">
         {% for agenda in allagendas %}
         <div id="day{{agenda.day}}" class="tabcontent after">
           {% for activity in agenda.activities.all %}
-          <div class="activity">{{activity.location}}</div>
+          <button id = "routebutton">route</button>
+          <div class="activity" placeid = '{{activity.result}}'>{{activity.location}}</div>
           {% endfor %}
           <a href="#">Add activity</a>
         </div>
@@ -210,7 +214,7 @@
         <button id = "searchbutton" class= "btn waves-effect waves-light">Find Suggestions!</button>
         <div id="map"></div>
         <div class = "loc"></div>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzgRKlW8A7Bgf5ywmvgtKtooX8YhKbm9U&libraries=places&callback=initAutocomplete"async defer></script>
+        
       </div>
     </section>
   </div>

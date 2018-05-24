@@ -92,7 +92,7 @@ $(document).ready(function(){
                     }
                     var resultid = res.results[e].place_id
 
-                    $('.loc').append("<div class = 'places' style = 'background-image: url(https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference="+ imgref +"&key="+ api +")' thisid = " + resultid + " ><h2>" + res.results[e].name + "</h2></div><form><input type = 'hidden' name = 'csrfmiddlewaretoken' value = '" + CSRFToken +"'><input type = 'hidden' name = 'name' value = '" + res.results[e].name +"'><input type = 'hidden' name = 'lat' value ='"+lat+"'><input type = 'hidden' name = 'lng' value = '"+lng+"'><input type = 'hidden' name = 'resultid' value = '" + resultid +"'><input type = 'hidden' name = 'tripID' value = '"+tripID+"'><input type = 'hidden' name = 'imgref' value = '" + imgref + "'><button class = 'addbutton'>add</button></form>")
+                    $('.loc').append("<div class = 'places' style = 'background-image: url(https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference="+ imgref +"&key="+ api +")' thisid = " + resultid + " ><h2>" + res.results[e].name + "</h2></div><form><input type = 'hidden' name = 'csrfmiddlewaretoken' value = '" + CSRFToken +"'><input type = 'hidden' name = 'name' value = '" + res.results[e].name +"'><input type = 'hidden' name = 'lat' value ='"+res.results[e].geometry.location.lat+"'><input type = 'hidden' name = 'lng' value = '"+res.results[e].geometry.location.lng+"'><input type = 'hidden' name = 'resultid' value = '" + resultid +"'><input type = 'hidden' name = 'tripID' value = '"+tripID+"'><input type = 'hidden' name = 'imgref' value = '" + imgref + "'><button class = 'addbutton'>add</button></form>")
                 }
             })
         }, "json");
@@ -140,5 +140,29 @@ $(document).ready(function(){
 
     $('.displayinfo').click(function(event){
         event.stopPropagation();
+    })
+    $(document).on('click','#mapbutton',function(e){
+        e.preventDefault()
+        $.ajax({
+            url: '/showmap',
+            success: function(serverResponse){
+                console.log('success. serverResponse', serverResponse)
+                $('.displayinfo').html(serverResponse)
+            }
+        })
+        $(".displayinfo").css('display','block')
+    })
+    $(document).on('click','#routebutton',function(e){
+        e.preventDefault()
+        var start = $(this).prev().attr('placeid')
+        var end = $(this).next().attr('placeid')
+        $.ajax({
+            url: '/showroute/'+start+'/'+end,
+            success:function(serverResponse){
+                console.log('success. serverResponse', serverResponse)
+                $('.displayinfo').html(serverResponse)
+            }
+        })
+        $(".displayinfo").css('display','block')
     })
 })
