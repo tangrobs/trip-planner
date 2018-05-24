@@ -98,10 +98,11 @@ def plan(request, tripID):
     context = {
         'user': user,
         'trip': Trip.objects.get(id=tripID),
-        'agendas': Agenda.objects.filter(trip=trip).exclude(day=1).exclude(day=0),
-        'allagendas':Agenda.objects.filter(trip=trip).exclude(day=0),
+        'agendas': Agenda.objects.filter(trip=trip).exclude(day=0),
+        'activities':Agenda.objects.filter(trip=trip).get(day = request.session['dayID']).activities.all(),
         'suggestions': Agenda.objects.filter(trip=trip).get(day = 0).activities.all()
     }
+    
     if user.id == trip.admin.id:
         return render(request, 'trips/plan_admin.html', context)
     return render(request, 'trips/plan.html', context)
@@ -123,10 +124,10 @@ def newAgenda(request, tripID):
     }
     return render(request, 'trips/agenda_tabs.html', context)
 
-def agendaContent(request, tripID):
-    trip = Trip.objects.get(id=tripID)
+def agendaContent(request):
+    trip = Trip.objects.get(id=request.session['tripID'])
     context = {
-        'agendas': Agenda.objects.filter(trip=trip).exclude(day=1).exclude(day=0),
+        'activities': Agenda.objects.filter(trip=trip).get(day = request.session['dayID']).activities.all(),
     }
     return render(request, 'trips/agenda_tabcontents.html', context)
 
@@ -183,6 +184,7 @@ def addactivity(request):
 
 def setdaysession(request, dayID):
     request.session['dayID'] = dayID
+    print('we have entered day session now we are setting it')
     print(request.session['dayID'])
     return HttpResponse("asdf")
 
