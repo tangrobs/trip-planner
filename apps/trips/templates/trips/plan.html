@@ -138,6 +138,10 @@
 
   </head>
   <body>
+    <script>
+      console.log( {{test}} )
+    </script>
+    
     <div class = "displayinfo"></div>
     <nav>
       <a href="/logout">Logout</a>
@@ -154,6 +158,7 @@
     {% endif %}
 
     <div class="container">
+        {{test}}
       <h3>{{trip.title}}</h3>
       <aside>
         <!-- sidebar for adding friends etc  -->
@@ -188,7 +193,23 @@
 
       <section>
   			<div>
-  				<h2>Proposed</h2>
+          <h2>Proposed</h2>
+          <div class = "proposed">
+            {% for activity in suggestions %}
+            <div class = 'places' style = 'background-image: url(https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference={{activity.imgref}}&key=AIzaSyAzgRKlW8A7Bgf5ywmvgtKtooX8YhKbm9U)' thisid = " + resultid + " >
+              <h2>{{activity.location}}</h2>
+            </div>
+            <form>
+              {% csrf_token %}
+              <input type = 'hidden' name = 'name' value = {{activity.location}}>
+              <input type = 'hidden' name = 'lat' value = {{activity.lat}}>
+              <input type = 'hidden' name = 'lng' value = {{activity.lng}}>
+              <input type = 'hidden' name = 'resultid' value = {{activity.resultid}}>
+              <input type = 'hidden' name = 'tripID' value = {{request.session.tripID}}>
+              <button class = 'agendadd'>add to agenda</button>
+            </form>
+            {% endfor %}
+          </div>
   				<button id = "activitybutton" class= "btn waves-effect waves-light">add activity</button>
   			</div>
   			<div>

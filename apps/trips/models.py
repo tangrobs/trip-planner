@@ -87,6 +87,10 @@ class Agenda(models.Model):
 
 class Activity(models.Model):
     location = models.CharField(max_length=255)
+    lng = models.FloatField()
+    lat = models.FloatField()
+    result = models.CharField(max_length = 255)
+    imgref = models.CharField(max_length = 255)
     description = models.TextField()
     likes = models.IntegerField()
     agenda = models.ForeignKey(Agenda, related_name="activities")

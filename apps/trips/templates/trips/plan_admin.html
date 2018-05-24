@@ -177,13 +177,11 @@
 
       <!-- Tab content -->
       <div class="tabcontents">
-        <div id="day1" class="tabcontent">
-          <div class="activity">Activity 1</div>
-          <a href="#">Add activity</a>
-        </div>
-        {% for agenda in agendas %}
+        {% for agenda in allagendas %}
         <div id="day{{agenda.day}}" class="tabcontent after">
-          <div class="activity">Activity 1</div>
+          {% for activity in agenda.activities.all %}
+          <div class="activity">{{activity.location}}</div>
+          {% endfor %}
           <a href="#">Add activity</a>
         </div>
         {% endfor %}
@@ -192,6 +190,18 @@
     <section>
       <div>
         <h2>Proposed</h2>
+        <div class = "proposed">
+          {% for activity in suggestions %}
+          <div class = 'places' style = 'background-image: url(https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference={{activity.imgref}}&key=AIzaSyAzgRKlW8A7Bgf5ywmvgtKtooX8YhKbm9U)' thisid = " + resultid + " >
+            <h2>{{activity.location}}</h2>
+          </div>
+          <form>
+            {% csrf_token %}
+            <input type = 'hidden' name = 'id' value = {{activity.id}}>
+            <button class = 'agendaadd'>add to agenda</button>
+          </form>
+          {% endfor %}
+        </div>
         <button id = "activitybutton" class= "btn waves-effect waves-light">add activity</button>
       </div>
       <div>
@@ -244,14 +254,19 @@
       for (i = 0; i < tablinks.length; i++) {
           tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
-
+      
       // Show the current tab, and add an "active" class to the button that opened the tab
       document.getElementById(day).style.display = "block";
       evt.currentTarget.className += " active";
+      //set the session
+      $.ajax({
+        url:"/setdaysession/"+day,
+        success: console.log("succesfully day session")
+      })
     }
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
-
+    
     // Trying to get the tabs to stay when page is refreshed
     // $(document).on('click', 'defaultOpen', function(){
     //   $.ajax({

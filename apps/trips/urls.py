@@ -19,5 +19,9 @@ urlpatterns = [
     url(r'^trips/plan/(?P<tripID>\d+)/join$', views.joinTrip),
     url(r'^logout$', views.logout),
     url(r'^try$', views.tryIt),
+    url(r'^gettripid$', views.gettripid),
+    url(r'^trips/activity/add$', views.addactivity),
+    url(r'^setdaysession/day(?P<dayID>\d+)$', views.setdaysession),
+    url(r'^trips/activity/addtoagenda$', views.addtoagenda),
 
 ]

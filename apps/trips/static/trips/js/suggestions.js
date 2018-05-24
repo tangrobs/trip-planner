@@ -82,15 +82,19 @@ $(document).ready(function(){
         $.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius=1500&type=attraction&photo_reference&key=" + api, function(res) {
             $('.loc').html('')
             data = res
-            for(var e in res.results){
-                var imgref = "12"
-                if(res.results[e].photos){
-                    imgref = res.results[e].photos[0].photo_reference
-                }
-                var resultid = res.results[e].place_id
+            var tripID
+            $.get('/gettripid',function(id){
+                tripID = id
+                for(var e in res.results){
+                    var imgref = "12"
+                    if(res.results[e].photos){
+                        imgref = res.results[e].photos[0].photo_reference
+                    }
+                    var resultid = res.results[e].place_id
 
-                $('.loc').append("<div class = 'places' style = 'background-image: url(https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference="+ imgref +"&key="+ api +")' thisid = " + resultid + " ><h2>" + res.results[e].name + "</h2></div><form><input type = 'hidden' name = 'csrfmiddlewaretoken' value = '" + CSRFToken +"'><input type = 'hidden' name = 'name' value = '" + res.results[e].name +"'><input type = 'hidden' name = 'lat' value ='"+lat+"'><input type = 'hidden' name = 'lng' value = '"+lng+"'><input type = 'hidden' name = 'resultid' value = '" + resultid +"'><button class = 'addbutton'>add</button></form>")
-            }
+                    $('.loc').append("<div class = 'places' style = 'background-image: url(https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference="+ imgref +"&key="+ api +")' thisid = " + resultid + " ><h2>" + res.results[e].name + "</h2></div><form><input type = 'hidden' name = 'csrfmiddlewaretoken' value = '" + CSRFToken +"'><input type = 'hidden' name = 'name' value = '" + res.results[e].name +"'><input type = 'hidden' name = 'lat' value ='"+lat+"'><input type = 'hidden' name = 'lng' value = '"+lng+"'><input type = 'hidden' name = 'resultid' value = '" + resultid +"'><input type = 'hidden' name = 'tripID' value = '"+tripID+"'><input type = 'hidden' name = 'imgref' value = '" + imgref + "'><button class = 'addbutton'>add</button></form>")
+                }
+            })
         }, "json");
     })
     $(document).on('click','.places', function(){
@@ -119,6 +123,15 @@ $(document).ready(function(){
             method: 'post',
             data: $(this).parent().serialize(),
             success: console.log("we sent info")
+        })
+    })
+    $(document).on('click','.agendaadd', function(e){
+        e.preventDefault()
+        $.ajax({
+            url:'/trips/activity/addtoagenda',
+            method: 'post',
+            data: $(this).parent().serialize(),
+            success: console.log("we added to the agenda")
         })
     })
     $('body').click(function(event){
